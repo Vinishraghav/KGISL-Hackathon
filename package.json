@@ -1,0 +1,41 @@
+{
+  "name": "smart-meet-ai",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "dev:next": "next dev",
+    "dev:host": "next dev -H 0.0.0.0",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js",
+    "share": "npx localtunnel --port 3000",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "framer-motion": "^12.35.0",
+    "lucide-react": "^0.577.0",
+    "next": "16.1.6",
+    "openai": "^6.26.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "recharts": "^3.7.0",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3",
+    "tailwind-merge": "^3.5.0",
+    "zustand": "^5.0.11"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "localtunnel": "^2.0.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,154 @@
+{
+    "name": "SmartMeet AI - Meeting Scheduler",
+    "nodes": [
+        {
+            "parameters": {
+                "path": "smartmeet-schedule",
+                "responseMode": "responseNode",
+                "options": {}
+            },
+            "id": "1a2b3c4d-web-hook-node",
+            "name": "Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                200,
+                300
+            ],
+            "webhookId": "smartmeet-meeting-scheduler"
+        },
+        {
+            "parameters": {
+                "jsCode": "const emails = $input.item.json.body.participants_emails || [];\n\nreturn emails.map(email => ({\n  json: {\n    meeting_title: $input.item.json.body.meeting_title,\n    meeting_date: $input.item.json.body.meeting_date,\n    meeting_time: $input.item.json.body.meeting_time,\n    meeting_link: $input.item.json.body.meeting_link,\n    email: email\n  }\n}));"
+            },
+            "id": "code-loop-emails",
+            "name": "Split Emails",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                420,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "sendTo": "={{ $json.email }}",
+                "subject": "=Meeting Invitation – {{ $json.meeting_title }}",
+                "message": "=Hello,\n\nYou are invited to a meeting.\n\nMeeting Title: {{ $json.meeting_title }}\nDate: {{ $json.meeting_date }}\nTime: {{ $json.meeting_time }}\n\nJoin the meeting using the link below:\n{{ $json.meeting_link }}\n\nWhen you open the link, you will be asked to enter your Name and Email and then you can join the meeting.\n\nRegards,\nMeeting Scheduler Bot",
+                "appendAttribution": false
+            },
+            "id": "send-gmail",
+            "name": "Gmail",
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2,
+            "position": [
+                640,
+                300
+            ],
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "YOUR_GMAIL_CREDENTIAL",
+                    "name": "Gmail account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "calendar": {
+                    "__rl": true,
+                    "value": "primary",
+                    "mode": "list"
+                },
+                "summary": "={{ $('Webhook').first().json.body.meeting_title }}",
+                "start": "={{ $('Webhook').first().json.body.meeting_date }}T{{ $('Webhook').first().json.body.meeting_time }}",
+                "description": "=Join here: {{ $('Webhook').first().json.body.meeting_link }}",
+                "attendees": [
+                    "={{ $('Webhook').first().json.body.participants_emails.join(',') }}"
+                ],
+                "options": {
+                    "sendUpdates": "all"
+                }
+            },
+            "id": "google-calendar-node",
+            "name": "Google Calendar",
+            "type": "n8n-nodes-base.googleCalendar",
+            "typeVersion": 1,
+            "position": [
+                860,
+                300
+            ],
+            "credentials": {
+                "googleCalendarOAuth2Api": {
+                    "id": "YOUR_CALENDAR_CREDENTIAL",
+                    "name": "Google Calendar account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "options": {
+                    "responseBody": "={\n  \"status\": \"Meeting scheduled\",\n  \"number_of_participants\": {{ $('Webhook').first().json.body.participants_emails.length }},\n  \"meeting_link\": \"{{ $('Webhook').first().json.body.meeting_link }}\"\n}"
+                }
+            },
+            "id": "webhook-response",
+            "name": "Respond to Webhook",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [
+                1080,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Split Emails",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Split Emails": {
+            "main": [
+                [
+                    {
+                        "node": "Gmail",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Gmail": {
+            "main": [
+                [
+                    {
+                        "node": "Google Calendar",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Google Calendar": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to Webhook",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "saveExecutionProgress": true,
+        "saveManualExecutions": true,
+        "callerPolicy": "workflowsFromSameOwner"
+    }
+}
