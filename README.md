@@ -200,3 +200,179 @@ Metrics include:
 ---
 
 ## Project Structure
+
+
+KGISL-Hackathon
+│
+├── app
+│ ├── page.tsx
+│ ├── dashboard
+│ ├── meetings
+│ ├── tasks
+│ └── analytics
+│
+├── components
+│ ├── Navbar
+│ ├── Sidebar
+│ ├── MeetingCard
+│ └── TaskCard
+│
+├── services
+│ ├── api
+│ └── ai-processing
+│
+├── database
+│ └── supabase-config
+│
+├── public
+│
+└── styles
+
+
+---
+
+## Database Schema
+
+### Users
+
+id
+name
+email
+password
+created_at
+
+
+### Meetings
+
+id
+title
+description
+created_by
+start_time
+end_time
+recording_allowed
+productivity_score
+
+
+### Participants
+
+meeting_id
+user_id
+join_time
+leave_time
+duration
+role
+
+
+### Tasks
+
+id
+meeting_id
+assigned_to
+task
+deadline
+status
+
+
+### Meeting Summaries
+
+id
+meeting_id
+summary
+key_points
+productivity_score
+
+
+---
+
+## Installation
+
+Clone the repository
+
+
+git clone https://github.com/your-repository/KGISL-Hackathon.git
+
+
+Navigate to the project folder
+
+
+cd KGISL-Hackathon
+
+
+Install dependencies
+
+
+npm install
+
+
+Run the development server
+
+
+npm run dev
+
+
+Open the application in your browser
+
+
+http://localhost:3000
+
+
+---
+
+## Environment Variables
+
+Create a `.env.local` file and add the following variables:
+
+
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+OPENAI_API_KEY=
+
+
+---
+
+## Deployment
+
+The application can be deployed using **Vercel**.
+
+Steps:
+
+1. Push the project to GitHub
+2. Import the repository into Vercel
+3. Add environment variables
+4. Deploy the application
+
+---
+
+## Future Improvements
+
+Possible enhancements include:
+
+- Real-time meeting transcription
+- AI chatbot for meeting queries
+- Calendar integration
+- Smart task reminders
+- Voice emotion detection
+- Mobile application
+
+---
+
+## Hackathon Impact
+
+This project demonstrates how Artificial Intelligence can improve meeting productivity by transforming conversations into actionable insights.
+
+Benefits:
+
+- Reduces manual note-taking
+- Improves task accountability
+- Enhances meeting efficiency
+- Provides measurable productivity insights
+
+---
+
+## Contributors
+
+Team Members:
+
+- Vinishraghav
+- Hackathon Team
